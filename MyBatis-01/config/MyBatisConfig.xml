@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+  
+  <!-- 从类路径下 导入数据库连接属性文件 -->
+  <properties resource="db.properties"></properties>
+  
+  <!-- mybatis运行时的设置 -->
+  <settings>
+  	<!-- 开启自动驼峰命名    即数据库列 a_name   对应实体类  aName  开启之后必须按此规则写实体类  a_name对应 实体类 a_name失效-->
+  	<setting name="mapUnderscoreToCamelCase" value="true"/>
+  </settings>
+  <!-- 为类型起别名 -->
+  <typeAliases>
+  	<!--
+  		type:实体类的全路径   默认别名类名首字母小写 
+  		alias:指定别名名称
+  	  -->
+  	<typeAlias type="com.mybatis01.bean.Employee"/>
+  	<!-- 将该报下的bean类 设置默认别名,如果某个类要取其他别名  可以使用@alias("别名")标在实体类     推荐使用类全路径名称 ：可以点击进去 -->
+  	<package name="com.mybatis01"/>
+  </typeAliases>
+  
+  <!-- 数据库连接属性环境配置 (可配置多个  由default属性指定对应值 确定连接的数据库连接信息)-->
+  <environments default="mysql">
+  	<!-- mysql数据库连接环境配置  -->
+    <environment id="mysql">
+      <!-- 事务管理器类型   提交和回滚的方式     jdbc事务管理:和jdbc的事务处理一样 自动提交和回滚    MANAGED:不主动提交和回滚  需要编码实现 -->
+      <transactionManager type="JDBC"/>
+      <!-- 数据源类型  (连接池) -->
+      <dataSource type="POOLED">
+      	<property name="driver" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  
+  <!-- 
+  	数据库移植性
+    type="DB_VENDOR"  固定
+    <property>中  name=数据库厂商标识   value=为标识起一个名
+   -->
+  <databaseIdProvider type="DB_VENDOR">
+  	<property name="MySQL" value="mysql"/>
+  	<property name="Orcale" value="orcl"/>
+  	<property name="SQL Server" value="sqlserver"/>
+  </databaseIdProvider>
+  
+  <!-- 映射器  :具体sql语句和执行语句的接口 包含其中
+  	mappers内注册SQL映射文件(dao接口的实现文件)
+  -->
+  <mappers>
+  	<!-- 
+  		resource:类路径下的资源  ==> SQL映射文件   包名+文件名
+  		class:接口全类名  com.mybatis01.EmployeeDAO
+  		package:包名 
+  	-->
+    
+   <!--  <mapper resource="mapper/EmpMapper.xml"/> -->
+   <!-- 
+   		class="com.mybatis01.dao.EmpMapper"  写接口全类名 
+  			xml配置版本:这种写法需要xml映射文件与接口名一样 且要放在同一个包下
+  			注解版本:将sql语句放到@Select()标签
+    -->
+   	<!-- <mapper class="com.mybatis01.dao.EmployeeDAO"/>
+    <mapper class="com.mybatis01.dao.EmployeeAnnotationDAO"/> -->
+    <package name="com.mybatis01.dao"/>
+  </mappers>
+</configuration>

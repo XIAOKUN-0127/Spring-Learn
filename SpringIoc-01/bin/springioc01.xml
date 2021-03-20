@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+
+<!-- set方法赋值 -->
+<bean id="person01" class="com.springioc01.bean.Person">
+	<property name="name" value="lisi"></property>
+	<property name="sex" value="男"></property>
+	<property name="age" value="22"></property>
+</bean>
+
+<bean id="person02" class="com.springioc01.bean.Person">
+	<property name="name" value="zhangsan"></property>
+</bean>
+
+<!-- 构造器赋值 不需要按顺序 -->
+<bean id="person03" class="com.springioc01.bean.Person">
+	<constructor-arg name="age" value="11"></constructor-arg>
+	<constructor-arg name="name" value="刘邦"></constructor-arg>
+	<constructor-arg name="sex" value="女"></constructor-arg>
+</bean>
+<!-- 省略 name属性 则必须按构造器顺序     否则有错  可以指定 索引 0开始 存在参数个属性相同的重载  ,可用type="java.lang.Integer"指定参数类型 -->
+<bean id="person04" class="com.springioc01.bean.Person">
+	<constructor-arg  value="女2" index="1"></constructor-arg>
+	<constructor-arg  value="刘邦2" index="0"></constructor-arg>
+	<constructor-arg  value="112" index="2"></constructor-arg>
+</bean>
+
+<bean id="person05" class="com.springioc01.bean.Person" p:name="p5" p:sex="M" p:age="11"></bean>
+
+<bean id="person06" class="com.springioc01.bean.Person">
+	
+</bean>
+
+<bean id="user01" class="com.springioc01.bean.User">
+	<property name="id" value="1001"></property>
+	<property name="uname" value="user01"></property>
+</bean>
+
+<bean id="user02" class="com.springioc01.bean.User">
+	<property name="id" value="1002"></property>
+	<property name="uname" value="user02"></property>
+	<property name="address" ref="adress01"></property>
+</bean>
+
+
+<bean id="user04" class="com.springioc01.bean.User">
+	<property name="id" value="1002"></property>
+	<property name="uname" value="user02"></property>
+	<property name="address" ref="adress01"></property>
+	<property name="address.shen" value="省份"></property>
+</bean>
+<bean id="adress01" class="com.springioc01.bean.Adress">
+	<property name="shen" value="湖南"></property>
+	<property name="shi" value="株洲"></property>
+	<property name="xian" value="攸县"></property>
+</bean>
+
+<bean id="user03" class="com.springioc01.bean.User">
+	<property name="id" value="1003"></property>
+	<property name="uname" value="user03"></property>
+	<property name="address">
+		<bean id="adress02" class="com.springioc01.bean.Adress">
+			<property name="shen" value="湖南"></property>
+			<property name="shi" value="长沙"></property>
+			<property name="xian" value="岳麓区"></property>
+		</bean>
+	</property>
+</bean>
+
+<bean id="c1" class="com.springioc01.bean.Cart">
+	<property name="cname" value="奥迪"></property>
+	<property name="cprice" value="120000"></property>
+</bean>
+<bean id="company01" class="com.springioc01.bean.Company">
+	<property name="name" value="远光软件"></property>
+	<property name="carts">
+		<list>
+			<ref bean="c1"/>
+			<bean class="com.springioc01.bean.Cart">
+				<property name="cname" value="奔驰"></property>
+				<property name="cprice" value="20000"></property>
+			</bean>
+		</list>
+	</property>
+</bean>
+
+
+<bean id="company02" class="com.springioc01.bean.Company">
+	<property name="name" value="用友软件"></property>
+	<property name="carts">
+		<list>
+			<ref bean="c1"/>
+			<bean class="com.springioc01.bean.Cart">
+				<property name="cname" value="奔驰2"></property>
+				<property name="cprice" value="5000"></property>
+			</bean>
+		</list>
+	</property>
+	<property name="maps">
+		<map>
+			<entry key="map01" value="001"></entry>
+			<entry key="map01" value-ref="c1"></entry>
+			<entry key="mmmm">
+				<map>
+					<entry key="mmp01" value="m01"></entry>
+				</map>
+			</entry>
+		</map>
+	</property>
+</bean>
+
+
+<bean id="company03" class="com.springioc01.bean.Company">
+	<property name="name" value="用友软件3"></property>
+	<property name="carts">
+		<list>
+			<ref bean="c1"/>
+			<bean class="com.springioc01.bean.Cart">
+				<property name="cname" value="奔驰3"></property>
+				<property name="cprice" value="15000"></property>
+			</bean>
+		</list>
+	</property>
+	<property name="maps">
+		<map>
+			<entry key="map01" value="001"></entry>
+			<entry key="map01" value-ref="c1"></entry>
+			<entry key="mmmm">
+				<map>
+					<entry key="mmp01" value="m01"></entry>
+				</map>
+			</entry>
+		</map>
+	</property>
+	<property name="properties">
+		<props>
+			<prop key="user">root</prop>
+			<prop key="pwd">
+				a
+			</prop>
+		</props>
+	</property>
+</bean>
+<!-- util名称空间创建集合 用于其他bean引用，id是必须的 -->
+<util:map id="myMap">
+	<entry key="map01" value="1001"></entry>
+	<entry key="map02" value="1002"></entry>
+	<entry key="map03" value="1003"></entry>
+</util:map>
+<bean id="company04" class="com.springioc01.bean.Company">
+	<property name="maps" ref="myMap"></property>
+</bean>
+<!-- 实例工厂 -->
+<bean id="InstanceFactory" class="com.springioc01.factory.PersonInstanceFactory"></bean>
+<bean id="p1" class="com.springioc01.bean.Person" factory-bean="InstanceFactory" factory-method="getPersonInstance">
+	<constructor-arg value="myNAME"></constructor-arg>
+</bean>
+<!-- 静态工厂
+	singonle:默认  容器创建前 bean创建 同一个id相同bean对象
+	property：先创建容器  获得bean时再创建bean  同一个id获得不同bean对象
+ -->
+<bean id="p2" class="com.springioc01.factory.PersonStaticFactory"  factory-method="getPerson" >
+	<constructor-arg value="1000"></constructor-arg>
+</bean>
+
+<bean id="impl" class="com.springioc01.factory.FactoryBeanImpl"></bean>
+<!-- abstract="true" -->
+<bean id="p3" class="com.springioc01.bean.Person" >
+	<property name="name" value="Iname"></property>
+	<property name="sex" value="MM"></property>
+	<property name="age" value="1212"></property>
+</bean>
+<!-- depent on 依赖 可以改变bean的实例顺序   depent-on="book01,cart01" 按顺序book01,cart01 -->
+
+<bean id="p4" class="com.springioc01.bean.Person" parent="p3">
+	<property name="age" value="999"></property>
+</bean>
+</beans>

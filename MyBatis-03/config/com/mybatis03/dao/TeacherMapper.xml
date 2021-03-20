@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace的值为 对应接口的全类名,mapper相当于接口实现类
+ -->
+<mapper namespace="com.mybatis03.dao.TeacherMapper">
+	<!-- public Teacher selectTeacherByPrimary(Integer teacherId); -->
+	<select id="selectTeacherByPrimary" resultMap="selectOneMap">
+		select * from tb_teacher where teacher_id=#{teacherId}
+	</select>
+	<resultMap type="com.mybatis03.bean.Teacher" id="selectOneMap">
+		<id column="teacher_id" property="teacherId"/>
+		<result column="teacher_name" property="teacherName"/>
+		<result column="teacher_course" property="course"/>
+		<result column="teacher_address" property="address"/>
+		<result column="teacher_birthday" property="birthday"/>
+	</resultMap>
+	
+	
+	<!-- public List<Teacher> selectTeacherByManyParam(Teacher teacher); 
+		<if>标签拼接动态语句
+		
+		<where>标签 能够去除第一个<if>标签的前面的and 但不能去除最后一条<if>的后面的and
+	-->
+	<sql id="selectSql">select * from tb_teacher</sql>
+	<select id="selectTeacherByManyParam" resultMap="selectOneMap">
+		<include refid="selectSql"></include> 
+		<!-- <where>
+			<if test="birthday!=null">
+				and teacher_birthday &lt; #{birthday}
+			</if>
+			<if test="address!=null and address!=''">
+				and teacher_address like #{address}
+			</if>
+			<if test="course!=null and course!=''">
+				and teacher_course=#{course}
+			</if>
+		</where> -->
+		<!-- 
+			prefix 前缀
+			suffix 后缀
+			prefixOverrides 去除前缀多余的字符串
+			suffixOverrides 去除后缀多余的字符串
+		 -->
+		<bind name="pattern" value="'%' + _parameter.getAddress() + '%'"/>
+		<trim prefix="where" suffix="" prefixOverrides="and" suffixOverrides="and">
+			<if test="birthday!=null">
+				teacher_birthday &lt; #{birthday} and
+			</if>
+			<if test="pattern!=null and pattern!=''">
+				teacher_address like #{pattern} and
+			</if>
+			<if test="course!=null and course!=''">
+				teacher_course=#{course} and
+			</if>
+		</trim>
+	</select>
+	
+	<!-- 
+	  <foreach>标签
+		close:关闭符号 
+		open:打开符号 
+		separator:分隔符  
+		item:代表当前循环的集合元素 
+		index 代表当前索引  
+		collection:集合 值默认为list @Param可以改变默认
+    -->
+	<select id="selectTeacherByIdIn" resultMap="selectOneMap">
+		select * from tb_teacher 
+		<trim prefix="where teacher_id in "  suffixOverrides=",">
+			<foreach collection="list"  close=")" open="(" separator="," item="id">
+				#{id}
+			</foreach>
+		</trim>
+	</select>
+	
+	<!-- 
+		chioose when otherwise
+		类似于java的switch分支结构
+		
+		当满足一个when的条件后 就不判断其它条件  当when所有都不满足 就执行 otherwise
+	-->
+	<select id="selectTeacherByChioose" resultMap="selectOneMap">
+		select * from tb_teacher 
+		<trim prefix="where">
+			<choose>
+				<when test="teacherId!=null">
+					teacher_id=#{teacherId}
+				</when>
+				<when test="teacherName!=null and teacherName!=''">
+					teacher_name=#{teacherName}
+				</when>
+				<when test="address!=null and address!=''">
+					teacher_address like #{address}
+				</when>
+				<otherwise>
+					1=1
+				</otherwise>
+			</choose>
+		</trim>
+	</select>
+	<!-- 动态更新 -->
+	<update id="updateTeacherDynamicParam">
+		update tb_teacher 
+		<!-- <trim prefix="set" suffixOverrides=",">
+			<if test="teacherName!=null and teacherName!=''">
+				teacher_name=#{teacherName},
+			</if>
+			<if test="address!=null and address!=''">
+				teacher_address=#{address},
+			</if>
+			<if test="birthday!=null">
+				teacher_birthday=#{birthday},
+			</if>
+			<if test="course!=null and course!=''">
+				teacher_course=#{course},
+			</if> 
+		</trim> -->
+		<set>
+			<if test="teacherName!=null and teacherName!=''">
+				teacher_name=#{teacherName},
+			</if>
+			<if test="address!=null and address!=''">
+				teacher_address=#{address},
+			</if>
+			<if test="birthday!=null">
+				teacher_birthday=#{birthday},
+			</if>
+			<if test="course!=null and course!=''">
+				teacher_course=#{course},
+			</if> 
+		</set>
+		where teacher_id=#{teacherId}
+	</update>
+	
+</mapper>

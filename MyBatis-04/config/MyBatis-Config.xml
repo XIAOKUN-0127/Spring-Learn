@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	  <!-- 从类路径下 导入数据库连接属性文件 -->
+  	  <properties resource="db.properties"></properties>
+	  <settings>
+	  	<!-- 开启自动驼峰命名    即数据库列 a_name   对应实体类  aName  开启之后必须按此规则写实体类  a_name对应 实体类 a_name失效-->
+	  	<setting name="mapUnderscoreToCamelCase" value="false"/>
+	  	<!-- 开启全局懒加载 -->
+	  	<setting name="lazyLoadingEnabled" value="true"/>
+	  	<setting name="aggressiveLazyLoading" value="false"/>
+	  	<!-- 开启全局二级缓存  -->
+	  	<setting name="cacheEnabled" value="true"/>
+	  </settings>
+	  <!-- 数据库环境 -->
+	  <environments default="mysql">
+	  	<!-- mysql数据库连接环境配置  -->
+	    <environment id="mysql">
+	      <!-- 事务管理器类型   提交和回滚的方式     jdbc事务管理:和jdbc的事务处理一样 自动提交和回滚    MANAGED:不主动提交和回滚  需要编码实现 -->
+	      <transactionManager type="JDBC"/>
+	      <!-- 数据源类型  (连接池) -->
+	      <dataSource type="POOLED">
+	      	<property name="driver" value="${driver}"/>
+	        <property name="url" value="${url}"/>
+	        <property name="username" value="${username}"/>
+	        <property name="password" value="${password}"/>
+	      </dataSource>
+	    </environment>
+	  </environments>
+	  
+	  <!-- sql映射文件注册 -->
+	  <mappers>
+	  	<mapper class="com.mybatis04.dao.TeacherMapper"/>
+	  	
+	  </mappers>
+</configuration>

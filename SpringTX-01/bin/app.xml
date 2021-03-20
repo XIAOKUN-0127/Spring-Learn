@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+<!-- 引入外部数据库连接配置文件 -->
+<!-- <context:property-placeholder location="classpath:db.properties"/> 
+
+
+<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	<property name="user" value="${user}"/>
+	<property name="password" value="${password}"/>
+	<property name="jdbcUrl" value="${jdbcUrl}"/>
+	<property name="driverClass" value="${driverClass}"/>
+	<property name="initialPoolSize" value="${initialPoolSize}"/>
+	<property name="minPoolSize" value="${minPoolSize}"/>
+	<property name="maxPoolSize" value="${maxPoolSize}"/>
+	<property name="acquireIncrement" value="${acquireIncrement}"/>
+	<property name="maxStatements" value="${maxStatements}"/>
+	<property name="maxStatementsPerConnection" value="${maxStatementsPerConnection}"/>
+</bean>
+ -->
+<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+	<property name="user" value="root"></property>
+	<property name="password" value="111"></property>
+	<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/spring_jdbctemplate"></property>
+	<property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+</bean>
+
+
+
+</beans>

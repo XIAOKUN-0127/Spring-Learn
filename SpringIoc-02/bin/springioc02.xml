@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+<!-- 组件扫描  扫描base-package="com.springioc02.*"基础包下  加了注解的类  生成对象 id默认为类名首字母小写 -->
+<context:component-scan base-package="com.springioc02.*" >
+	<!-- 排除
+	annotation 排除标了某个注解的类
+	assignable 排除某个具体类
+	use-default-filters="false"禁用默认过滤规则   <context:include-filter(包含)才能起效
+	包含和排除二者不能共存
+	 -->
+	<!-- <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/> -->
+	<!-- <context:include-filter type="assignable" expression="com.sprringioc02.UserServlet"/> -->
+</context:component-scan>
+
+</beans>

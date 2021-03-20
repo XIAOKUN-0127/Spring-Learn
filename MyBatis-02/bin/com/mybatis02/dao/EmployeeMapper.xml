@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 
+	namespace的值为 对应接口的全类名,mapper相当于接口实现类
+ -->
+<mapper namespace="com.mybatis02.dao.EmployeeMapper">
+	<!-- 
+		MyBatis的参数问题
+		1.传入单个参数
+		  基本类型:#{任意名称}
+		 一个PoJo参数
+		2.传入多个参数
+		 多个参数:默认将参数封装到Map,取参方式 #{索引1}或#{param1},通过在形参处标记@Param("map取值的键")
+		3.传入PoJo对象
+		  #{对象的属性名称}
+		4.将多个参数封装到Map  #{键名}
+		5.多个参数包含PoJo对象 会自动封装成Map
+		例如 getEmp(@Param("empId")Integer empId,String empName,Employee employee)
+		#{empId}
+		#{param2}
+		#{param3.email}
+	
+	 -->
+	<select id="getEmployee" resultType="com.mybatis02.bean.Employee">
+		select * from tb_emp where dept_id=#{aa}
+	</select>
+	<!-- id和name组合查询
+		#{0}  #{1}
+		#{param1} #{param2}取empId、empName的值 
+	 -->
+	<select id="getEmployeeEmpIdAndEmpName" resultType="com.mybatis02.bean.Employee">
+		select * from tb_emp where emp_id=#{empId} and emp_name=#{empName}
+	</select>
+	<!-- 从Map集合内取参数值 -->
+	<!-- 
+		#{属性名}:预编译方式  安全 参数是预编译后设置进去的
+		${属性名}:不是参数预编译方式  直接与sql拼串  不安全 会出现sql注入的问题
+		sql语句只有参数位置支持预编译  如果例如表名要动态传入 就要使用 ${}拼串
+	 -->
+	<select id="getEmployeeAndMap" resultType="com.mybatis02.bean.Employee">
+		select * from tb_emp where emp_id=#{empId} and emp_name=#{empName}
+	</select>
+	
+	<!-- 多个参数包含Employee -->
+	<select id="getEmpAndIdAndNameAndEmpToEmail" resultType="com.mybatis02.bean.Employee">
+		select * from tb_emp where emp_id=#{empId} and emp_name=#{param2} and email=#{param3.email}
+	</select>
+	
+	<select id="getTableId" resultType="int">
+		select emp_id from ${tableName} where emp_id=#{empId} 
+	</select>
+	
+	<!-- 
+		返回值问题  集合List
+		resultType设置为元素类型即可    mybatis会判断 为集合就封装到List
+	 -->
+	 <!-- 查询所有员工信息 -->
+	 <select id="getAllEmp" resultType="com.mybatis02.bean.Employee">
+	 	select * from tb_emp
+	 </select>
+	 
+	
+	 
+	 <!-- getManyEmp -->
+	 <select id="getManyEmp1" resultType="com.mybatis02.bean.Employee" >
+	 	select * from tb_emp where dept_id=#{deptId}
+	 </select>
+	 
+	 <!-- 返回单条记录封装Map -->
+	 <select id="getReturnMap" resultType="map">
+	 	select * from tb_emp where emp_id=#{empId}
+	 </select>
+	 <!-- 返回多条记录 封装Map  键可以自己指定（@Mapkey）唯一属性  值为对象 
+	   resultType=map里的值类型
+	   
+	 -->
+	 <select id="getEmpMaps" resultType="com.mybatis02.bean.Employee">
+		 select * from tb_emp
+	 </select>
+	 <!-- 当不开起驼峰命名时  使用实体类为返回值 不会报错  但数据绑定不上 
+	 	解决方法 ：1.驼峰命名 2.sql的列别名  3.自定义ResultMap
+	  -->
+	 <select id="getOneEmp" resultMap="myEmp">
+	    select * from tb_emp where emp_id=#{empId}
+	 </select>
+	 <!-- 自定义javaBean映射规则 -->
+	 <resultMap type="com.mybatis02.bean.Employee" id="myEmp">
+	 	<id column="emp_id" property="empId"/>
+	 	<result column="emp_name" property="empName"/>
+	 	<result column="email" property="email"/>
+	 	<result column="dept_id" property="deptId"/>
+	 	<result column="gender" property="gender"/>
+	 </resultMap>
+	 <!-- 对象.属性的方式 -->
+	 <resultMap type="com.mybatis02.bean.Employee" id="EDS">
+	 	<id column="emp_id" property="empId"/>
+	 	<result column="emp_name" property="empName"/>
+	 	<result column="email" property="email"/>
+	 	<result column="gender" property="gender"/>
+	 	<result column="dept_id" property="deptId"/>
+	 	<result column="eDept_id" property="department.deptId"/>
+	 	<result column="dept_name" property="department.deptName"/>
+	 </resultMap>
+	 <!-- association方式映射 -->
+	 <resultMap type="com.mybatis02.bean.Employee" id="EDS2">
+	 	<id column="emp_id" property="empId"/>
+	 	<result column="emp_name" property="empName"/>
+	 	<result column="email" property="email"/>
+	 	<result column="gender" property="gender"/>
+	 	<!--association 做复杂对象映射  
+	 	property： 实体类内的属性对象名称  
+	 	javaType:指定该属性的类型
+	 	-->
+	 	<association property="department" javaType="com.mybatis02.bean.Department">
+	 		<id column="dept_id" property="deptId"/>
+	 		<result column="dept_name" property="deptName"/>
+	 	</association>
+	 </resultMap>
+	 <!-- 查询员工信息的简单查询方法 -->
+	 <select id="getEmpSimple" resultMap="edsimple">
+	 	select * from tb_emp where emp_id=#{empId}
+	 </select>
+	 <resultMap type="com.mybatis02.bean.Employee" id="edsimple">
+	 	<id column="emp_id" property="empId"/>
+	 	<result column="emp_name" property="empName"/>
+	 	<result column="email" property="email"/>
+	 	<result column="gender" property="gender"/>
+	 	<result column="dept_id" property="deptId"/>
+	 	<!-- 分步查询  
+	 		property：指定查询后封装到实体类的对象名称
+	 	    select：指定查询sql
+	 	    column:第二个sql需要的查询参数列
+	 	-->
+	 	<association property="department" select="com.mybatis02.dao.DepartmentMapper.getDeptSimple" column="dept_id"></association>
+	 </resultMap>
+	 
+	 
+	 <!-- 联合查询 -->
+	 <select id="getEmpAndDept" resultMap="EDS2">
+	 	select tb_dept.*,emp_id,emp_name,email,gender,tb_emp.dept_id eDept_id
+	 	from tb_emp 
+	 	left join tb_dept 
+	 	on tb_emp.dept_id=tb_dept.dept_id 
+	 	where emp_id=#{empId}
+	 </select>
+	<!-- 
+		增删改不用写返回值类型  根据接口方法定义的返回值类型返回    可以的类型 :  int 、long、boolean(影响0行 false)
+		传入的参数是 实体类对象   取值时 #{属性名称}
+	 -->
+	<update id="updateEmployee">
+		update tb_emp set emp_name=#{emp_name},email=#{email},gender=#{gender},dept_id=#{dept_id} where emp_id=#{emp_id}
+	</update>
+	
+	<delete id="deleteEmployee">
+		delete from tb_emp where emp_id=#{emp_id}
+	</delete>
+	<!-- useGeneratedKeys="true" 指定获得自增值   keyProperty="empId" 将自增值放到实体类的empId属性  -->
+	<insert id="insertEmployee" useGeneratedKeys="true" keyProperty="empId">
+		insert into tb_emp values(null,#{empName},#{gender},#{email},#{deptId})
+	</insert>
+	
+	<insert id="insertEmployeeWithEmpId">
+		<!-- 
+			查询出tb_emp表的最大emp_id,然后加1 当作插入的主键
+			order : 
+				BEFORE 查询自增主键的语句在插入前执行  order=BEFORE 查询出的max(emp_id)+1就是当前插入语句的主键
+				AFTER  查询自增主键的语句在插入后执行  order=AFTER 当前插入的主键 就是查询出的max(emp_id)
+		 -->
+		<selectKey order="AFTER" keyProperty="empId" resultType="Integer">
+			select max(emp_id) from tb_emp
+		</selectKey>
+		insert into tb_emp values(#{empId},#{empName},#{gender},#{email},#{deptId})
+	</insert>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
+
+<!-- 基于配置的方式
+	1.将目标类和切面类加入spring容器
+	2.开aop空间
+	3.标记aspect @aspect
+	4.配通知方法 切入点表达式
+	<aop:config>
+		切入点表达式 <aop:pointcut expression="execution(* com.springaop03.*.*.*(*,*))" id="myPointct"/>
+		前置<aop:before method="logStart" pointcut-ref="myPointct"/>
+		返回<aop:after-returning method="logReturn" pointcut-ref="myPointct" returning="result"/>返回值
+		异常<aop:after-throwing method="logException" pointcut-ref="myPointct" throwing="exception"/>异常
+		后置<aop:after method="logEnd" pointcut-ref="myPointct"/>
+	<aop:config>
+ -->
+ <!-- 切面 -->
+<bean id="logUtils" class="com.springaop03.utils.LogUtils"></bean>
+<!-- 目标类 -->
+<bean id="myCalucater" class="com.springaop03.impl.MyMathCalucater"></bean>
+
+<aop:config>
+	<!-- 切点表达式 -->
+	<aop:pointcut expression="execution(* com.springaop03.*.*.*(*,*))" id="myPointct"/>
+	<!-- 切面配置 -->
+	<aop:aspect ref="logUtils">
+		<!-- 具体增强的配置 包括切入点引用 和 指定增强代码的方法  返回值变量接受指定 -->
+		<aop:before method="logStart" pointcut-ref="myPointct"/>
+		<aop:after-returning method="logReturn" pointcut-ref="myPointct" returning="result"/>
+		<aop:after-throwing method="logException" pointcut-ref="myPointct" throwing="exception"/>
+		<aop:after method="logEnd" pointcut-ref="myPointct"/>
+	</aop:aspect>
+</aop:config>
+</beans>

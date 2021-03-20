@@ -1,0 +1,16 @@
+springIoc
+	1.Ioc
+	2.DI
+	3.ApplicationContext-->ClassPathXmlApplicationContext,FileSystemXmlApplicationContext
+	4.类路径 直接src下-->项目的bin文件夹，source folder资源文件夹/folder区别是 source folder下的内容都在bin下
+	5.项目和bean类上的小s代表spring 项目或被spring容器管理
+	6.springbean的配置详解
+		<bean id="person01" class="com.yc.bean.Person">
+			<property name="name" value="lisi"></property>  set方式设值
+		</bean>
+		id :唯一标识对象	 class :对象的类路径	
+		name :实体类的属性名称	value :属性值
+	7.spring容器创建时，对象全都创建完毕，同一个对象在容器内只创建一个(默认单实例)
+	8.<property>标签设值的方式，底层使用反射调用了setxxx()方法
+	9.获取容器不存在的对象,报错：NoSuchBeanDefinitionException: No bean named 'person03' is defined
+	10.xml的<property>的name属性值由setXXX()方法的XXX决定，与属性名称无关。
